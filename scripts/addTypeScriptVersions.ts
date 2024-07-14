@@ -12,7 +12,7 @@ await npmInstallTypeScriptVersion("next");
 async function npmInstallTypeScriptVersion(version: string) {
   console.log(`Installing Typescript ${version}...`);
   await $`npm add typescript-${version}@npm:typescript@${version}`
-    .cwd(path.resolve(import.meta.dirname, "../"));
+    .cwd(path.resolve(import.meta.dirname!, "../"));
 }
 
 async function getTypeScriptVersionsToInstall() {
@@ -21,9 +21,9 @@ async function getTypeScriptVersionsToInstall() {
   // get the highest version for each minor
   for (const version of versions) {
     if (
-      version == null ||
-      version.prerelease.length > 0 ||
-      version.build.length > 0
+      !version ||
+      version.prerelease!.length > 0 ||
+      version.build!.length > 0
     ) {
       continue;
     }

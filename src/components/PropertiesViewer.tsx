@@ -1,5 +1,5 @@
 import CircularJson from "circular-json";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CommentRange,
   CompilerApi,
@@ -13,14 +13,14 @@ import {
   Symbol,
   Type,
   TypeChecker,
-} from "../compiler/index.js";
-import { BindingTools, CompilerState } from "../types/index.js";
-import { enumUtils, getSyntaxKindName } from "../utils/index.js";
-import { ErrorBoundary } from "./ErrorBoundary.js";
-import { FlowNodeGraph } from "./FlowNodeGraph.js";
-import { LazyTreeView } from "./LazyTreeView.js";
-import { Spinner } from "./Spinner.js";
-import { ToolTippedText } from "./ToolTippedText.js";
+} from "../compiler/";
+import { BindingTools, CompilerState } from "../types/";
+import { enumUtils, getSyntaxKindName } from "../utils/";
+import { ErrorBoundary } from "./ErrorBoundary";
+import { FlowNodeGraph } from "./FlowNodeGraph";
+import { LazyTreeView } from "./LazyTreeView";
+import { Spinner } from "./Spinner";
+import { ToolTippedText } from "./ToolTippedText";
 
 export interface PropertiesViewerProps {
   compiler: CompilerState;
@@ -543,7 +543,7 @@ function isFlowNode(value: any): value is FlowNode {
   return value.antecedents != null || value.antecedent != null;
 }
 
-function getEnumFlagElement(enumObj: any, value: number) {
+function getEnumFlagElement<T>(enumObj: T, value: number) {
   const elements = enumUtils.getEnumFlagLines(enumObj, value);
   if (!elements) {
     return <>{value}</>;

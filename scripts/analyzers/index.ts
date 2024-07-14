@@ -1,1 +1,1 @@
-export * from "./TsAnalyzer.js";
+export * from "./TsAnalyzer.ts";

@@ -2,7 +2,7 @@
 import { globSync } from "glob";
 import * as fs from "node:fs";
 import { generateCode } from "ts-factory-code-generator-generator";
-import { getCompilerVersions } from "./getCompilerVersions.js";
+import { getCompilerVersions } from "./getCompilerVersions.ts";
 
 const versions = getCompilerVersions();
 const factoryCodeDir = "./src/resources/factoryCode/";

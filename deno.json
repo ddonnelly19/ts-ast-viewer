@@ -1,51 +1,56 @@
 {
-  "tasks": {
-    "dev": "vite",
-    "build": "DENO_V8_FLAGS=--max_old_space_size=10240 vite build && cp CNAME .nojekyll dist/",
-    "format": "dprint fmt",
-    "check": "DENO_DISABLE_PEDANTIC_NODE_WARNINGS=1 deno check src/main.tsx vite.config.ts",
-    "test": "deno test",
-    "predeploy": "deno task build",
-    "preview": "vite preview",
-    "addTypeScriptVersions": "deno run -A scripts/addTypeScriptVersions.ts",
-    "updateCompilerFiles": "deno task copyLibFiles && deno task createCompilerVersions && deno task createFactoryCode && deno task createPublicApiInfo",
-    "copyLibFiles": "deno run -A scripts/copyLibFiles.ts ",
-    "createCompilerVersions": "deno run -A scripts/createCompilerVersions.ts",
-    "createFactoryCode": "deno run -A scripts/createFactoryCode.ts",
-    "createPublicApiInfo": "deno run -A scripts/createPublicApiInfo.ts"
-  },
-  "compilerOptions": {
-    "lib": ["deno.ns", "dom"],
-    "jsx": "react-jsx"
-  },
-  "lint": {
-    "rules": {
-      "exclude": ["no-explicit-any"]
-    },
-    "exclude": [
-      "**/*.generated.ts"
-    ]
-  },
-  "fmt": {
-    "lineWidth": 120,
-    "exclude": [
-      "src/resources",
-      "**/*.generated.ts"
-    ]
-  },
-  "imports": {
-    "@david/dax": "jsr:@david/dax@^0.40.0",
-    "@david/dts-minify": "jsr:@david/dts-minify@^0.3.3",
-    "@std/expect": "jsr:@std/expect@^0.221",
-    "@std/semver": "jsr:@std/semver@^0.221"
-  },
-  "exclude": [
-    "dist"
-  ],
-  "unstable": [
-    "byonm",
-    "sloppy-imports",
-    "bare-node-builtins",
-    "unsafe-proto"
-  ]
+	"tasks": {
+		"dev": "vite",
+		"build": "DENO_V8_FLAGS=--max_old_space_size=10240 vite build && cp CNAME .nojekyll dist/",
+		"format": "dprint fmt",
+		"check": "DENO_DISABLE_PEDANTIC_NODE_WARNINGS=1 deno check src/main.tsx vite.config.ts",
+		"test": "deno test",
+		"predeploy": "deno task build",
+		"preview": "vite preview",
+		"addTypeScriptVersions": "deno run -A scripts/addTypeScriptVersions.ts",
+		"updateCompilerFiles": "deno task copyLibFiles && deno task createCompilerVersions && deno task createFactoryCode && deno task createPublicApiInfo",
+		"copyLibFiles": "deno run -A scripts/copyLibFiles.ts ",
+		"createCompilerVersions": "deno run -A scripts/createCompilerVersions.ts",
+		"createFactoryCode": "deno run -A scripts/createFactoryCode.ts",
+		"createPublicApiInfo": "deno run -A scripts/createPublicApiInfo.ts"
+	},
+	"compilerOptions": {
+		"lib": [
+			"deno.ns",
+			"dom"
+		],
+		"jsx": "react-jsx"
+	},
+	"lint": {
+		"rules": {
+			"exclude": [
+				"no-explicit-any"
+			]
+		},
+		"exclude": [
+			"**/*.generated.ts"
+		]
+	},
+	"fmt": {
+		"lineWidth": 120,
+		"exclude": [
+			"src/resources",
+			"**/*.generated.ts"
+		]
+	},
+	"imports": {
+		"@david/dax": "jsr:@david/dax@^0.40.0",
+		"@david/dts-minify": "jsr:@david/dts-minify@^0.3.3",
+		"@std/expect": "jsr:@std/expect@^0.221",
+		"@std/semver": "jsr:@std/semver@^0.221"
+	},
+	"exclude": [
+		"dist"
+	],
+	"unstable": [
+		"byonm",
+		"sloppy-imports",
+		"bare-node-builtins",
+		"unsafe-proto"
+	]
 }

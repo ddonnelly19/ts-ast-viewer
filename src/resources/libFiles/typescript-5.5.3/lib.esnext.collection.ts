@@ -1,0 +1,7 @@
+const fileData = {
+    fileName: `/lib.esnext.collection.d.ts`,
+    // File text is copyright Microsoft Corporation and is distributed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+    text: "/// <reference no-default-lib=\"true\"/>\ninterface MapConstructor{groupBy<K,T>(items:Iterable<T>,keySelector:(item:T,index:number)=>K,):Map<K,T[]>;}interface ReadonlySetLike<T>{keys():Iterator<T>;has(value:T):boolean;readonly size:number;}interface Set<T>{union<U>(other:ReadonlySetLike<U>):Set<T|U>;intersection<U>(other:ReadonlySetLike<U>):Set<T&U>;difference<U>(other:ReadonlySetLike<U>):Set<T>;symmetricDifference<U>(other:ReadonlySetLike<U>):Set<T|U>;isSubsetOf(other:ReadonlySetLike<unknown>):boolean;isSupersetOf(other:ReadonlySetLike<unknown>):boolean;isDisjointFrom(other:ReadonlySetLike<unknown>):boolean;}interface ReadonlySet<T>{union<U>(other:ReadonlySetLike<U>):Set<T|U>;intersection<U>(other:ReadonlySetLike<U>):Set<T&U>;difference<U>(other:ReadonlySetLike<U>):Set<T>;symmetricDifference<U>(other:ReadonlySetLike<U>):Set<T|U>;isSubsetOf(other:ReadonlySetLike<unknown>):boolean;isSupersetOf(other:ReadonlySetLike<unknown>):boolean;isDisjointFrom(other:ReadonlySetLike<unknown>):boolean;}"
+};
+
+export default fileData;

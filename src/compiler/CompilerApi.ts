@@ -1,34 +1,53 @@
-import * as ts from "typescript";
+import { ts } from "ts-morph";
 import { CompilerPackageNames } from "./compilerVersions.generated.js";
+import { FlowNode as _FlowNode } from "../../node_modules/ts-factory-code-generator-generator/node_modules/@ts-morph/common/lib/typescript.d.ts";
+
+export enum FlowFlags {
+	Unreachable = 1,
+	Start = 2,
+	BranchLabel = 4,
+	LoopLabel = 8,
+	Assignment = 16,
+	TrueCondition = 32,
+	FalseCondition = 64,
+	SwitchClause = 128,
+	ArrayMutation = 256,
+	Call = 512,
+	ReduceLabel = 1024,
+	Referenced = 2048,
+	Shared = 4096,
+	Label = 12,
+	Condition = 96
+}
 
 export interface CompilerApi {
-  createSourceFile: typeof ts.createSourceFile;
-  createProgram: typeof ts.createProgram;
-  getDefaultLibFileName: typeof ts.getDefaultLibFileName;
-  forEachChild: typeof ts.forEachChild;
-  ScriptTarget: typeof ts.ScriptTarget;
-  ScriptKind: typeof ts.ScriptKind;
-  SyntaxKind: typeof ts.SyntaxKind;
-  ModifierFlags: typeof ts.ModifierFlags;
-  ModuleKind: typeof ts.ModuleKind;
-  NodeFlags: typeof ts.NodeFlags;
-  ObjectFlags: typeof ts.ObjectFlags;
-  SymbolFlags: typeof ts.SymbolFlags;
-  TypeFlags: typeof ts.TypeFlags;
-  FlowFlags: typeof ts.FlowFlags;
-  // Internal enum
-  CheckFlags: object;
-  // Internal enum
-  TransformFlags: object;
-  // Internal enum
-  TypeMapKind: object;
-  tsAstViewer: {
-    packageName: CompilerPackageNames;
-    cachedSourceFiles: { [name: string]: SourceFile | undefined };
-  };
-  version: string;
-  getLeadingCommentRanges: typeof ts.getLeadingCommentRanges;
-  getTrailingCommentRanges: typeof ts.getTrailingCommentRanges;
+	createSourceFile: typeof ts.createSourceFile;
+	createProgram: typeof ts.createProgram;
+	getDefaultLibFileName: typeof ts.getDefaultLibFileName;
+	forEachChild: typeof ts.forEachChild;
+	ScriptTarget: typeof ts.ScriptTarget;
+	ScriptKind: typeof ts.ScriptKind;
+	SyntaxKind: typeof ts.SyntaxKind;
+	ModifierFlags: typeof ts.ModifierFlags;
+	ModuleKind: typeof ts.ModuleKind;
+	NodeFlags: typeof ts.NodeFlags;
+	ObjectFlags: typeof ts.ObjectFlags;
+	SymbolFlags: typeof ts.SymbolFlags;
+	TypeFlags: typeof ts.TypeFlags;
+	FlowFlags: typeof FlowFlags;
+	// Internal enum
+	CheckFlags: object;
+	// Internal enum
+	TransformFlags: object;
+	// Internal enum
+	TypeMapKind: object;
+	tsAstViewer: {
+		packageName: CompilerPackageNames;
+		cachedSourceFiles: { [name: string]: SourceFile | undefined };
+	};
+	version: string;
+	getLeadingCommentRanges: typeof ts.getLeadingCommentRanges;
+	getTrailingCommentRanges: typeof ts.getTrailingCommentRanges;
 }
 
 export type Node = ts.Node;
@@ -48,4 +67,4 @@ export type TypeFlags = ts.TypeFlags;
 export type SyntaxKind = ts.SyntaxKind;
 export type CompilerHost = ts.CompilerHost;
 export type CommentRange = ts.CommentRange;
-export type FlowNode = ts.FlowNode;
+export type FlowNode = _FlowNode;

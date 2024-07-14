@@ -1,12 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client'
 import { App } from "./App.js";
 import { AppContextProvider } from "./AppContext.js";
 import "./external/react-treeview.css";
-
-ReactDOM.render(
+const root = createRoot(document.getElementById("root") as HTMLElement);
+root.render(
   <AppContextProvider>
     <App />
   </AppContextProvider>,
-  document.getElementById("root") as HTMLElement,
 );
