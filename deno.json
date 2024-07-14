@@ -1,5 +1,6 @@
 {
 	"tasks": {
+		"install": "npm install && deno run --allow-read=. --allow-write=. scripts/patchPackage.ts",
 		"dev": "vite",
 		"build": "DENO_V8_FLAGS=--max_old_space_size=10240 vite build && cp CNAME .nojekyll dist/",
 		"format": "dprint fmt",
