@@ -3,15 +3,14 @@ import * as semver from "@std/semver";
 import * as path from "node:path";
 
 const versions = await getTypeScriptVersionsToInstall();
+await npmInstallTypeScriptVersions([...versions, "next"]);
 
-for (const version of versions) {
-  await npmInstallTypeScriptVersion(version);
-}
-await npmInstallTypeScriptVersion("next");
-
-async function npmInstallTypeScriptVersion(version: string) {
-  console.log(`Installing Typescript ${version}...`);
-  await $`deno install typescript-${version}@npm:typescript@${version}`
+async function npmInstallTypeScriptVersions(versions: string[]) {
+  const packages = versions.map((version) => `typescript-${version}@npm:typescript@${version}`);
+  console.log(`Installing Typescript ${versions.join(", ")}...`);
+  // Use the currently running Deno executable so this works even when `deno`
+  // is not available on PATH (for example when launched from a local npm package binary).
+  await $`${Deno.execPath()} install ${packages}`
     .cwd(path.resolve(import.meta.dirname!, "../"));
 }
 

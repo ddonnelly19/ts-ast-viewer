@@ -1,39 +1,56 @@
 {
-  "name": "ts-ast-viewer",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "author": "David Sherret",
-  "license": "MIT",
-  "scripts": {
-    "postinstall": "deno run --allow-read=. --allow-write=. scripts/patchPackage.ts"
-  },
-  "dependencies": {
-    "@viz-js/viz": "^3.24.0",
-    "allotment": "^1.20.5",
-    "circular-json": "^0.5.9",
-    "code-block-writer": "^13.0.3",
-    "lz-string": "^1.5.0",
-    "monaco-editor": "^0.55.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-monaco-editor": "0.59.0",
-    "react-spinners": "^0.17.0",
-    "react-treeview": "^0.4.7",
-    "ts-morph": "^27.0.2"
-  },
-  "devDependencies": {
-    "@types/circular-json": "^0.4.0",
-    "@types/inline-style-prefixer": "^5.0.3",
-    "@types/node": "^25.0.3",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "@types/react-treeview": "^0.4.6",
-    "@vitejs/plugin-react": "^5.1.2",
-    "glob": "^13.0.0",
-    "ts-factory-code-generator-generator": "^0.7.0",
-    "typescript": "5.9.3",
-    "vite": "^7.3.0",
-    "vite-plugin-monaco-editor": "^1.1.0"
-  }
+	"name": "ts-ast-viewer",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"author": "David Sherret",
+	"license": "MIT",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"postinstall": "deno run --allow-read=. --allow-write=. scripts/patchPackage.ts"
+	},
+	"dependencies": {
+		"@viz-js/viz": "^3.25.0",
+		"allotment": "^1.20.5",
+		"circular-json": "^0.5.9",
+		"code-block-writer": "^13.0.3",
+		"lz-string": "^1.5.0",
+		"monaco-editor": "^0.55.1",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"react-monaco-editor": "0.59.0",
+		"react-spinners": "^0.17.0",
+		"react-treeview": "^0.4.7",
+		"ts-morph": "^27.0.2",
+		"typescript-5.2.2": "npm:typescript@5.2.2",
+		"typescript-5.3.3": "npm:typescript@5.3.3",
+		"typescript-5.4.5": "npm:typescript@5.4.5",
+		"typescript-5.5.4": "npm:typescript@5.5.4",
+		"typescript-5.6.3": "npm:typescript@5.6.3",
+		"typescript-5.7.3": "npm:typescript@5.7.3",
+		"typescript-5.8.3": "npm:typescript@5.8.3",
+		"typescript-5.9.3": "npm:typescript@5.9.3",
+		"typescript-6.0.2": "npm:typescript@6.0.2",
+		"typescript-next": "npm:typescript@^6.0.0-dev.20260323"
+	},
+	"devDependencies": {
+		"@types/circular-json": "^0.4.0",
+		"@types/inline-style-prefixer": "^5.0.3",
+		"@types/node": "^25.5.0",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@types/react-treeview": "^0.4.6",
+		"@vitejs/plugin-react": "^6.0.1",
+		"deno": "^2.7.7",
+		"esbuild": "^0.27.4",
+		"glob": "^13.0.6",
+		"ts-factory-code-generator-generator": "^0.7.0",
+		"typescript": "6.0.2",
+		"vite": "^8.0.2",
+		"vite-plugin-monaco-editor": "^1.1.0"
+	},
+	"overrides": {
+		"monaco-editor": "^0.55.1"
+	}
 }

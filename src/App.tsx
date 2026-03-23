@@ -90,6 +90,8 @@ export function App() {
             );
             dispatch({ type: "SET_SELECTED_NODE", node: descendant });
           }}
+          scriptKind={state.options.scriptKind}
+          scriptTarget={state.options.scriptTarget}
           theme={state.editorTheme}
           text={state.code}
           highlight={getCodeHighlightRange()}
