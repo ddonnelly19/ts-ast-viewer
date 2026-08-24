@@ -72,7 +72,7 @@ Deno.test("should get the state that was set", () => {
 });
 
 Deno.test("should work for every tree mode", () => {
-  for (const treeMode of enumUtils.getValues<TreeMode>(TreeMode)) {
+  for (const treeMode of enumUtils.getValues(TreeMode) as TreeMode[]) {
     const { saver } = setup();
     const state = saver.get();
     state.treeMode = treeMode;

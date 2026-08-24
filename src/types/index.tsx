@@ -1,4 +1,4 @@
-import type { CompilerApi, Node, Program, ScriptTarget, SourceFile, TypeChecker } from "../compiler/index.js";
+import type { CompilerApi, Node, Program, ScriptKind, ScriptTarget, SourceFile, TypeChecker } from "../compiler/index.js";
 import type { AnyCompilerPackageName } from "../compiler/tsgo/tsgoVersion.js";
 
 export interface StoreState {
@@ -32,6 +32,7 @@ export interface PrebuiltSourceFile {
 export interface OptionsState {
   compilerPackageName: AnyCompilerPackageName;
   treeMode: TreeMode;
+  scriptKind: ScriptKind;
   scriptTarget: ScriptTarget;
   bindingEnabled: boolean;
   showFactoryCode: boolean;

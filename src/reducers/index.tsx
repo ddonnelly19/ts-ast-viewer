@@ -19,7 +19,6 @@ export function appReducer(
 				return state;
 			}
 
-<<<<<<< HEAD
 			return {
 				...state,
 				compiler: {
@@ -39,12 +38,75 @@ export function appReducer(
 				...state,
 				options: convertOptions(state.compiler == null ? undefined : state.compiler.api, action.api, state.options),
 			};
-			fillNewSourceFileState(newState.options.compilerPackageName, action.api, newState, state.code, state.options);
-			urlSaver.updateUrl(state.code);
+			if (action.prebuilt != null) {
+				newState.compiler = {
+					packageName: newState.options.compilerPackageName,
+					api: action.api,
+					sourceFile: action.prebuilt.sourceFile,
+					bindingTools: action.prebuilt.bindingTools,
+					selectedNode: action.prebuilt.sourceFile,
+				};
+			} else {
+				fillNewSourceFileState(newState.options.compilerPackageName, action.api, newState, state.options);
+			}
+			urlSaver.updateUrl(state.files);
 			return newState;
 		}
 		case actionNames.SET_CODE: {
-			return { ...state, code: action.code };
+			return {
+				...state,
+				files: {
+					...state.files,
+					[state.currentFile]: action.code,
+				},
+			};
+		}
+		case actionNames.SET_CURRENT_FILE: {
+			return {
+				...state,
+				currentFile: action.file,
+				files: {
+					...state.files,
+					[action.file]: state.files[action.file] ?? "",
+				},
+			};
+		}
+		case actionNames.RENAME_FILE: {
+			if (state.files[action.newFile] != null) {
+				return state;
+			}
+
+			const renamedFiles: Record<string, string> = {};
+			for (const [file, text] of Object.entries(state.files)) {
+				renamedFiles[file === action.file ? action.newFile : file] = text;
+			}
+
+			return {
+				...state,
+				currentFile: state.currentFile === action.file ? action.newFile : state.currentFile,
+				files: renamedFiles,
+			};
+		}
+		case actionNames.DELETE_FILE: {
+			const deletedIndex = Object.keys(state.files).indexOf(action.file);
+			const remainingFiles = { ...state.files };
+			delete remainingFiles[action.file];
+			const remainingNames = Object.keys(remainingFiles);
+
+			let newCurrentFile = state.currentFile;
+			if (state.currentFile === action.file) {
+				newCurrentFile = remainingNames[Math.min(deletedIndex, remainingNames.length - 1)];
+			}
+			if (!newCurrentFile) {
+				newCurrentFile = "/main.ts";
+				remainingFiles[newCurrentFile] = "";
+			}
+
+			return {
+				...state,
+				currentFile: newCurrentFile,
+				files: remainingFiles,
+			};
 		}
 		case actionNames.SET_OPTIONS: {
 			return {
@@ -67,120 +129,6 @@ export function appReducer(
 			return state;
 		}
 	}
-=======
-      return {
-        ...state,
-        compiler: {
-          ...state.compiler,
-          selectedNode: action.node,
-        },
-      };
-    }
-    case actionNames.SET_API_LOADING_STATE: {
-      return {
-        ...state,
-        apiLoadingState: action.loadingState,
-      };
-    }
-    case actionNames.REFRESH_SOURCEFILE: {
-      const newState = {
-        ...state,
-        options: convertOptions(state.compiler == null ? undefined : state.compiler.api, action.api, state.options),
-      };
-      if (action.prebuilt != null) {
-        newState.compiler = {
-          packageName: newState.options.compilerPackageName,
-          api: action.api,
-          sourceFile: action.prebuilt.sourceFile,
-          bindingTools: action.prebuilt.bindingTools,
-          selectedNode: action.prebuilt.sourceFile,
-        };
-      } else {
-        fillNewSourceFileState(newState.options.compilerPackageName, action.api, newState, state.options);
-      }
-      urlSaver.updateUrl(state.files);
-      return newState;
-    }
-    case actionNames.SET_CODE: {
-      return {
-        ...state,
-        files: {
-          ...state.files,
-          [state.currentFile]: action.code,
-        },
-      };
-    }
-    case actionNames.SET_CURRENT_FILE: {
-      return {
-        ...state,
-        currentFile: action.file,
-        files: {
-          ...state.files,
-          [action.file]: state.files[action.file] ?? "",
-        },
-      };
-    }
-    case actionNames.RENAME_FILE: {
-      if (state.files[action.newFile] != null) {
-        return state; // name is taken — keep the old one
-      }
-
-      // rebuilt in order so the renamed file keeps its place in the tab strip
-      const renamedFiles: Record<string, string> = {};
-      for (const [file, text] of Object.entries(state.files)) {
-        renamedFiles[file === action.file ? action.newFile : file] = text;
-      }
-
-      return {
-        ...state,
-        currentFile: state.currentFile === action.file ? action.newFile : state.currentFile,
-        files: renamedFiles,
-      };
-    }
-    case actionNames.DELETE_FILE: {
-      const deletedIndex = Object.keys(state.files).indexOf(action.file);
-      const remainingFiles = { ...state.files };
-      delete remainingFiles[action.file];
-      const remainingNames = Object.keys(remainingFiles);
-
-      let newCurrentFile = state.currentFile;
-      if (state.currentFile === action.file) {
-        // select the neighbouring file, like closing a tab in an editor
-        newCurrentFile = remainingNames[Math.min(deletedIndex, remainingNames.length - 1)];
-      }
-      if (!newCurrentFile) {
-        newCurrentFile = "/main.ts";
-        remainingFiles[newCurrentFile] = "";
-      }
-
-      return {
-        ...state,
-        currentFile: newCurrentFile,
-        files: remainingFiles,
-      };
-    }
-    case actionNames.SET_OPTIONS: {
-      return {
-        ...state,
-        options: {
-          ...state.options,
-          ...action.options,
-        },
-        editorTheme: deriveEditorTheme(action.options.theme || state.options.theme),
-      };
-    }
-    case actionNames.OS_THEME_CHANGE: {
-      return {
-        ...state,
-        editorTheme: deriveEditorTheme(state.options.theme),
-      };
-    }
-    default: {
-      const _assertNever: never = action;
-      return state;
-    }
-  }
->>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 }
 
 export function deriveEditorTheme(theme: Theme): CodeEditorTheme {
@@ -195,34 +143,17 @@ export function deriveEditorTheme(theme: Theme): CodeEditorTheme {
 }
 
 function fillNewSourceFileState(
-<<<<<<< HEAD
-	compilerPackageName: CompilerPackageNames,
+	compilerPackageName: AnyCompilerPackageName,
 	api: CompilerApi,
 	state: StoreState,
-	code: string,
 	options: OptionsState,
 ) {
-	const { sourceFile, bindingTools } = createSourceFile(api, code, options.scriptTarget, options.scriptKind);
+	const { sourceFiles, bindingTools } = createSourceFiles(api, state.files, options.scriptTarget);
 	state.compiler = {
 		packageName: compilerPackageName,
 		api,
-		sourceFile,
+		sourceFile: sourceFiles[state.currentFile],
 		bindingTools,
-		selectedNode: sourceFile,
+		selectedNode: sourceFiles[state.currentFile],
 	};
-=======
-  compilerPackageName: AnyCompilerPackageName,
-  api: CompilerApi,
-  state: StoreState,
-  options: OptionsState,
-) {
-  const { sourceFiles, bindingTools } = createSourceFiles(api, state.files, options.scriptTarget);
-  state.compiler = {
-    packageName: compilerPackageName,
-    api,
-    sourceFile: sourceFiles[state.currentFile],
-    bindingTools,
-    selectedNode: sourceFiles[state.currentFile],
-  };
->>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 }

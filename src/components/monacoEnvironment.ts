@@ -2,8 +2,8 @@
 // once its modules are bundled, so without it the language service silently falls back to
 // running on the main thread (or not at all) — no auto complete, no diagnostics.
 // Loaded dynamically alongside monaco itself so the workers stay out of the main bundle.
-import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import TsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import EditorWorker from "../../node_modules/monaco-editor/esm/vs/editor/editor.worker.js?worker";
+import TsWorker from "../../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js?worker";
 
 export function setUpMonacoEnvironment() {
   (globalThis as any).MonacoEnvironment = {

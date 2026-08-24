@@ -2,9 +2,10 @@
 	"compilerOptions": {
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
-		"target": "ES2024",
+		"target": "ESNext",
+		"allowImportingTsExtensions": true,
 		"lib": [
-			"ES2024",
+			"ESNext",
 			"DOM"
 		],
 		"jsx": "react-jsx",
@@ -12,14 +13,64 @@
 		"strictFunctionTypes": true,
 		"strict": true,
 		"sourceMap": true,
-		"rootDir": "src",
 		"outDir": "dist",
+		"ignoreDeprecations": "6.0",
+		"baseUrl": ".",
+		"paths": {
+			"typescript-6.0.2": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.9.3": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.8.3": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.7.3": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.6.3": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.5.4": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.4.5": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.3.3": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-5.2.2": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			],
+			"typescript-next": [
+				"node_modules/typescript/lib/typescript.d.ts"
+			]
+		},
 		"typeRoots": [
-			"./@types/"
+			"./node_modules/@types",
+			"./@types"
+		],
+		"forceConsistentCasingInFileNames": true,
+		"types": [
+			"node"
 		]
 	},
+	"include": [
+		"src/**/*",
+		"@types/**/*"
+	],
 	"exclude": [
 		"node_modules",
-		"**/node_modules/*"
+		"**/node_modules/*",
+		"scripts/**",
+		"dist",
+		".tsgo-build",
+		"**/*.generated.ts",
+		"src/**/*.test.ts",
+		"src/resources/**",
+		"src/compiler/tsgo/**",
+		"src/utils/__tests/**"
 	]
 }

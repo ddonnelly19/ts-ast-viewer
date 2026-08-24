@@ -8,8 +8,8 @@ import { assertNever } from "../utils/index.js";
 export async function importCompilerApi(packageName: CompilerPackageNames) {
     // these explicit import statements are required to get webpack to include these modules
     switch (packageName) {
-        case "typescript-6.0.2":
-            return await import("typescript-6.0.2");
+        case "typescript-6.0.3":
+            return await import("typescript-6.0.3");
         case "typescript-5.9.3":
             return await import("typescript-5.9.3");
         case "typescript-5.8.3":
@@ -26,8 +26,6 @@ export async function importCompilerApi(packageName: CompilerPackageNames) {
             return await import("typescript-5.3.3");
         case "typescript-5.2.2":
             return await import("typescript-5.2.2");
-        case "typescript-next":
-            return await import("typescript-next");
         default:
             return assertNever(packageName, `Not implemented version: ${packageName}`);
     }
@@ -36,8 +34,8 @@ export async function importCompilerApi(packageName: CompilerPackageNames) {
 export async function importLibFiles(packageName: CompilerPackageNames) {
     // these explicit import statements are required to get webpack to include these modules
     switch (packageName) {
-        case "typescript-6.0.2":
-            return await import("../resources/libFiles/typescript-6.0.2/index.js");
+        case "typescript-6.0.3":
+            return await import("../resources/libFiles/typescript-6.0.3/index.js");
         case "typescript-5.9.3":
             return await import("../resources/libFiles/typescript-5.9.3/index.js");
         case "typescript-5.8.3":
@@ -54,8 +52,6 @@ export async function importLibFiles(packageName: CompilerPackageNames) {
             return await import("../resources/libFiles/typescript-5.3.3/index.js");
         case "typescript-5.2.2":
             return await import("../resources/libFiles/typescript-5.2.2/index.js");
-        case "typescript-next":
-            return await import("../resources/libFiles/typescript-next/index.js");
         default:
             return assertNever(packageName, `Not implemented version: ${packageName}`);
     }
@@ -66,8 +62,8 @@ export type FactoryCodeGenerator = (ts: CompilerApi, node: Node) => string;
 export async function getGenerateFactoryCodeFunction(packageName: CompilerPackageNames): Promise<FactoryCodeGenerator> {
     // these explicit import statements are required to get webpack to include these modules
     switch (packageName) {
-        case "typescript-6.0.2":
-            return (await import("../resources/factoryCode/typescript-6.0.2.generated.js")).generateFactoryCode as any;
+        case "typescript-6.0.3":
+            return (await import("../resources/factoryCode/typescript-6.0.3.generated.js")).generateFactoryCode as any;
         case "typescript-5.9.3":
             return (await import("../resources/factoryCode/typescript-5.9.3.generated.js")).generateFactoryCode as any;
         case "typescript-5.8.3":
@@ -84,8 +80,6 @@ export async function getGenerateFactoryCodeFunction(packageName: CompilerPackag
             return (await import("../resources/factoryCode/typescript-5.3.3.generated.js")).generateFactoryCode as any;
         case "typescript-5.2.2":
             return (await import("../resources/factoryCode/typescript-5.2.2.generated.js")).generateFactoryCode as any;
-        case "typescript-next":
-            return (await import("../resources/factoryCode/typescript-next.generated.js")).generateFactoryCode as any;
         default:
             return assertNever(packageName, `Not implemented version: ${packageName}`);
     }
@@ -101,8 +95,8 @@ export interface PublicApiInfo {
 export async function getPublicApiInfo(packageName: CompilerPackageNames): Promise<PublicApiInfo> {
     // these explicit import statements are required to get webpack to include these modules
     switch (packageName) {
-        case "typescript-6.0.2":
-            return (await import("../resources/publicApiInfo/typescript-6.0.2.generated.js"));
+        case "typescript-6.0.3":
+            return (await import("../resources/publicApiInfo/typescript-6.0.3.generated.js"));
         case "typescript-5.9.3":
             return (await import("../resources/publicApiInfo/typescript-5.9.3.generated.js"));
         case "typescript-5.8.3":
@@ -119,8 +113,6 @@ export async function getPublicApiInfo(packageName: CompilerPackageNames): Promi
             return (await import("../resources/publicApiInfo/typescript-5.3.3.generated.js"));
         case "typescript-5.2.2":
             return (await import("../resources/publicApiInfo/typescript-5.2.2.generated.js"));
-        case "typescript-next":
-            return (await import("../resources/publicApiInfo/typescript-next.generated.js"));
         default:
             return assertNever(packageName, `Not implemented version: ${packageName}`);
     }

@@ -1,7 +1,0 @@
-const fileData = {
-    fileName: `/lib.es2016.array.include.d.ts`,
-    // File text is copyright Microsoft Corporation and is distributed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
-    text: "interface Array<T>{includes(searchElement:T,fromIndex?:number):boolean;}interface ReadonlyArray<T>{includes(searchElement:T,fromIndex?:number):boolean;}interface Int8Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Uint8Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Uint8ClampedArray<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Int16Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Uint16Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Int32Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Uint32Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Float32Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}interface Float64Array<TArrayBuffer extends ArrayBufferLike>{includes(searchElement:number,fromIndex?:number):boolean;}"
-};
-
-export default fileData;

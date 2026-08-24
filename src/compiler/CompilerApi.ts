@@ -15,7 +15,6 @@ export declare enum FlowFlags {
 }
 
 export interface CompilerApi {
-<<<<<<< HEAD
 	createSourceFile: typeof ts.createSourceFile;
 	createProgram: typeof ts.createProgram;
 	getDefaultLibFileName: typeof ts.getDefaultLibFileName;
@@ -25,6 +24,8 @@ export interface CompilerApi {
 	SyntaxKind: typeof ts.SyntaxKind;
 	ModifierFlags: typeof ts.ModifierFlags;
 	ModuleKind: typeof ts.ModuleKind;
+	ModuleResolutionKind: typeof ts.ModuleResolutionKind;
+	JsxEmit: typeof ts.JsxEmit;
 	NodeFlags: typeof ts.NodeFlags;
 	ObjectFlags: typeof ts.ObjectFlags;
 	SymbolFlags: typeof ts.SymbolFlags;
@@ -43,36 +44,6 @@ export interface CompilerApi {
 	version: string;
 	getLeadingCommentRanges: typeof ts.getLeadingCommentRanges;
 	getTrailingCommentRanges: typeof ts.getTrailingCommentRanges;
-=======
-  createSourceFile: typeof ts.createSourceFile;
-  createProgram: typeof ts.createProgram;
-  getDefaultLibFileName: typeof ts.getDefaultLibFileName;
-  forEachChild: typeof ts.forEachChild;
-  ScriptTarget: typeof ts.ScriptTarget;
-  SyntaxKind: typeof ts.SyntaxKind;
-  ModifierFlags: typeof ts.ModifierFlags;
-  ModuleKind: typeof ts.ModuleKind;
-  ModuleResolutionKind: typeof ts.ModuleResolutionKind;
-  JsxEmit: typeof ts.JsxEmit;
-  NodeFlags: typeof ts.NodeFlags;
-  ObjectFlags: typeof ts.ObjectFlags;
-  SymbolFlags: typeof ts.SymbolFlags;
-  TypeFlags: typeof ts.TypeFlags;
-  FlowFlags: typeof FlowFlags;
-  // Internal enum
-  CheckFlags: object;
-  // Internal enum
-  TransformFlags: object;
-  // Internal enum
-  TypeMapKind: object;
-  tsAstViewer: {
-    packageName: CompilerPackageNames;
-    cachedSourceFiles: { [name: string]: SourceFile | undefined };
-  };
-  version: string;
-  getLeadingCommentRanges: typeof ts.getLeadingCommentRanges;
-  getTrailingCommentRanges: typeof ts.getTrailingCommentRanges;
->>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 }
 
 export type Node = ts.Node;
@@ -84,6 +55,9 @@ export type Program = ts.Program;
 export type TypeChecker = ts.TypeChecker;
 export type CompilerOptions = ts.CompilerOptions;
 export type ScriptTarget = ts.ScriptTarget;
+export type ScriptKind = ts.ScriptKind;
+export type ModuleResolutionKind = ts.ModuleResolutionKind;
+export type JsxEmit = ts.JsxEmit;
 export type NodeFlags = ts.NodeFlags;
 export type ObjectFlags = ts.ObjectFlags;
 export type SymbolFlags = ts.SymbolFlags;

@@ -1,7 +1,0 @@
-const fileData = {
-    fileName: `/lib.es2022.array.d.ts`,
-    // File text is copyright Microsoft Corporation and is distributed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
-    text: "interface Array<T>{at(index:number):T|undefined;}interface ReadonlyArray<T>{at(index:number):T|undefined;}interface Int8Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Uint8Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Uint8ClampedArray<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Int16Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Uint16Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Int32Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Uint32Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Float32Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface Float64Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):number|undefined;}interface BigInt64Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):bigint|undefined;}interface BigUint64Array<TArrayBuffer extends ArrayBufferLike>{at(index:number):bigint|undefined;}"
-};
-
-export default fileData;

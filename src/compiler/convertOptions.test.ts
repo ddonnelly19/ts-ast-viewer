@@ -19,6 +19,7 @@ function doTest(fromTarget: number, expectedTarget: number) {
 
   expect(convertOptions(apiFrom, apiTo, {
     compilerPackageName: "typescript-4.4.4" as any,
+    scriptKind: 0,
     scriptTarget: fromTarget,
     treeMode: 0,
     bindingEnabled: true,
@@ -27,6 +28,7 @@ function doTest(fromTarget: number, expectedTarget: number) {
     theme: Theme.Dark,
   })).toEqual({
     compilerPackageName: "typescript-4.4.4" as any,
+    scriptKind: 0,
     scriptTarget: expectedTarget,
     treeMode: 0,
     bindingEnabled: true,
