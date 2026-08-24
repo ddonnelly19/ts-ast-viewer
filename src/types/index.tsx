@@ -1,23 +1,16 @@
-import type {
-  CompilerApi,
-  CompilerPackageNames,
-  Node,
-  Program,
-  ScriptKind,
-  ScriptTarget,
-  SourceFile,
-  TypeChecker,
-} from "../compiler/index.js";
+import type { CompilerApi, Node, Program, ScriptTarget, SourceFile, TypeChecker } from "../compiler/index.js";
+import type { AnyCompilerPackageName } from "../compiler/tsgo/tsgoVersion.js";
 
 export interface StoreState {
-  code: string;
+  currentFile: string;
+  files: Record<string, string>;
   options: OptionsState;
   apiLoadingState: ApiLoadingState;
   compiler: CompilerState | undefined;
 }
 
 export interface CompilerState {
-  packageName: CompilerPackageNames;
+  packageName: AnyCompilerPackageName;
   api: CompilerApi;
   sourceFile: SourceFile;
   selectedNode: Node;
@@ -30,11 +23,16 @@ export interface BindingTools {
   typeChecker: TypeChecker;
 }
 
+/** A source file built outside the reducer (async compilers), ready to store as-is. */
+export interface PrebuiltSourceFile {
+  sourceFile: SourceFile;
+  bindingTools: () => BindingTools;
+}
+
 export interface OptionsState {
-  compilerPackageName: CompilerPackageNames;
+  compilerPackageName: AnyCompilerPackageName;
   treeMode: TreeMode;
   scriptTarget: ScriptTarget;
-  scriptKind: ScriptKind;
   bindingEnabled: boolean;
   showFactoryCode: boolean;
   showInternals: boolean;

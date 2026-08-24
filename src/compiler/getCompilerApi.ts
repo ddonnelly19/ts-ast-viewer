@@ -1,20 +1,33 @@
 import { importCompilerApi, importLibFiles } from "./compiler.generated.js";
 import type { CompilerApi } from "./CompilerApi.js";
 import type { CompilerPackageNames } from "./compilerVersions.generated.js";
+import { type AnyCompilerPackageName, getTsgoBuild, isTsgo, type TsgoPackageName } from "./tsgo/tsgoVersion.js";
 
 const compilerTypes: { [name: string]: Promise<CompilerApi> } = {};
 const compilerTypesLoaded: { [name: string]: true } = {};
 
-export function getCompilerApi(packageName: CompilerPackageNames): Promise<CompilerApi> {
+export function getCompilerApi(packageName: AnyCompilerPackageName): Promise<CompilerApi> {
   if (compilerTypes[packageName] == null) {
-    compilerTypes[packageName] = loadCompilerApi(packageName);
+    compilerTypes[packageName] = isTsgo(packageName) ? loadTsgoCompilerApi(packageName) : loadCompilerApi(packageName);
     compilerTypes[packageName].catch(() => delete compilerTypes[packageName]);
   }
   return compilerTypes[packageName];
 }
 
-export function hasLoadedCompilerApi(packageName: CompilerPackageNames) {
+export function hasLoadedCompilerApi(packageName: AnyCompilerPackageName) {
   return compilerTypesLoaded[packageName] === true;
+}
+
+// dynamically imported so a TSGO build's vendored client + wasm loader stay out of the
+// main bundle and the Deno type-check graph until a 7.0+ version is actually selected.
+async function loadTsgoCompilerApi(packageName: TsgoPackageName): Promise<CompilerApi> {
+  const build = getTsgoBuild(packageName);
+  const { createTsgoCompilerApi } = await import("./tsgo/tsgoCompiler.js");
+  const { getTsgoWasmModule } = await import("./tsgo/loadTsgoWasm.js");
+  const vendor = await build.importVendor();
+  await getTsgoWasmModule(build); // warm the wasm compile so the first source file is fast
+  compilerTypesLoaded[packageName] = true;
+  return createTsgoCompilerApi(vendor, build);
 }
 
 async function loadCompilerApi(packageName: CompilerPackageNames) {
@@ -39,8 +52,6 @@ async function loadCompilerApi(packageName: CompilerPackageNames) {
   function getLibSourceFiles() {
     return Object.keys(libFiles)
       .map((key) => (libFiles as any)[key] as { fileName: string; text: string })
-      .map((libFile) =>
-        api.createSourceFile(libFile.fileName, libFile.text, api.ScriptTarget.Latest, false, api.ScriptKind.TS)
-      );
+      .map((libFile) => api.createSourceFile(libFile.fileName, libFile.text, api.ScriptTarget.Latest, false));
   }
 }

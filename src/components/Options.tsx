@@ -1,5 +1,6 @@
 import type React from "react";
 import { useRef, useState } from "react";
+<<<<<<< HEAD
 import {
 	type CompilerApi,
 	type CompilerPackageNames,
@@ -7,6 +8,10 @@ import {
 	type ScriptKind,
 	type ScriptTarget,
 } from "../compiler/index.js";
+=======
+import type { CompilerApi, ScriptTarget } from "../compiler/index.js";
+import { type AnyCompilerPackageName, appCompilerVersions, isTsgo } from "../compiler/tsgo/tsgoVersion.js";
+>>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 import { useOnClickOutside } from "../hooks/index.js";
 import type { OptionsState } from "../types/index.js";
 import { type Theme, TreeMode } from "../types/index.js";
@@ -25,6 +30,7 @@ export function Options(props: OptionsProps) {
 
 	useOnClickOutside(containerRef, () => setShowOptionsMenu(false));
 
+<<<<<<< HEAD
 	return (
 		<div id="options" ref={containerRef}>
 			<div id="optionsButton" onClick={() => setShowOptionsMenu(!showOptionsMenu)} role="button">
@@ -103,6 +109,75 @@ export function Options(props: OptionsProps) {
 			(value) => onChange({ scriptTarget: value as ScriptTarget }),
 		);
 	}
+=======
+  return (
+    <div id="options" ref={containerRef}>
+      <div id="optionsButton" onClick={() => setShowOptionsMenu(!showOptionsMenu)} role="button">
+        Options
+      </div>
+      <div className="menuLine" hidden={!showOptionsMenu} />
+      <div className="menu" hidden={!showOptionsMenu}>
+        {getCompilerVersions()}
+        {getTreeMode()}
+        {getScriptTarget()}
+        {getBindingEnabled()}
+        {getShowFactoryCode()}
+        {getShowInternals()}
+        {getTheme()}
+        <div className="bottomLinks">
+          <ExternalLink text="About" url="https://github.com/dsherret/ts-ast-viewer/tree/main/docs/about.md" />
+          <span>&nbsp;|&nbsp;</span>
+          <ExternalLink text="View on GitHub" url="https://github.com/dsherret/ts-ast-viewer" />
+        </div>
+      </div>
+    </div>
+  );
+
+  function getCompilerVersions() {
+    const selection = (
+      <select
+        id="compilerVersionSelection"
+        value={props.options.compilerPackageName}
+        onChange={(event) => onChange({ compilerPackageName: event.target.value as AnyCompilerPackageName })}
+      >
+        {appCompilerVersions.map((v) => <option value={v.packageName} key={v.packageName}>{v.label}</option>)}
+      </select>
+    );
+    return <Option name="Version" value={selection} />;
+  }
+
+  function getTreeMode() {
+    // tsgo nodes only support forEachChild (no getChildren), so there's nothing to choose
+    if (isTsgo(props.options.compilerPackageName)) {
+      return undefined;
+    }
+    const selection = (
+      <select
+        id="treeMode"
+        value={props.options.treeMode}
+        onChange={(event) => onChange({ treeMode: parseInt(event.target.value, 10) as TreeMode })}
+      >
+        <option value={TreeMode.forEachChild}>node.forEachChild(child =&gt; ...)</option>
+        <option value={TreeMode.getChildren}>node.getChildren()</option>
+      </select>
+    );
+    return <Option name="Tree mode" value={selection} />;
+  }
+
+  function getScriptTarget() {
+    const { api } = props;
+    if (api == null) {
+      return undefined;
+    }
+    return getEnumOption(
+      "Script target",
+      "ts.ScriptTarget",
+      api.ScriptTarget,
+      props.options.scriptTarget,
+      (value) => onChange({ scriptTarget: value as ScriptTarget }),
+    );
+  }
+>>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 
 	function getBindingEnabled() {
 		const selection = (
@@ -118,6 +193,7 @@ export function Options(props: OptionsProps) {
 		return <Option name="Binding" value={selection} />;
 	}
 
+<<<<<<< HEAD
 	function getShowFactoryCode() {
 		const selection = (
 			<div>
@@ -131,6 +207,25 @@ export function Options(props: OptionsProps) {
 		);
 		return <Option name="Factory code" value={selection} />;
 	}
+=======
+  function getShowFactoryCode() {
+    // factory code generation isn't available for tsgo
+    if (isTsgo(props.options.compilerPackageName)) {
+      return undefined;
+    }
+    const selection = (
+      <div>
+        <input
+          id="showFactoryCode"
+          type="checkbox"
+          checked={props.options.showFactoryCode}
+          onChange={(event) => onChange({ showFactoryCode: !!event.target.checked })}
+        />
+      </div>
+    );
+    return <Option name="Factory code" value={selection} />;
+  }
+>>>>>>> cbcacc6181b1e3ef09f3f61eb3d8056c004a5bd9
 
 	function getTheme() {
 		const selection = (

@@ -1,6 +1,6 @@
 import type { CompilerApi, Node } from "../compiler/index.js";
 import { actions as constants } from "../constants/index.js";
-import type { ApiLoadingState, OptionsState } from "../types/index.js";
+import type { ApiLoadingState, OptionsState, PrebuiltSourceFile } from "../types/index.js";
 
 export interface SetCode {
   type: constants.SET_CODE;
@@ -12,6 +12,22 @@ export function setCode(code: string): SetCode {
     type: constants.SET_CODE,
     code,
   };
+}
+
+export interface SetCurrentFile {
+  type: constants.SET_CURRENT_FILE;
+  file: string;
+}
+
+export interface RenameFile {
+  type: constants.RENAME_FILE;
+  file: string;
+  newFile: string;
+}
+
+export interface DeleteFile {
+  type: constants.DELETE_FILE;
+  file: string;
 }
 
 export interface SetApiLoadingState {
@@ -29,12 +45,16 @@ export function setApiLoadingState(loadingState: ApiLoadingState): SetApiLoading
 export interface RefreshSourceFile {
   type: constants.REFRESH_SOURCEFILE;
   api: CompilerApi;
+  // pre-built source file for async compilers (tsgo); sync compilers
+  // build it in the reducer instead
+  prebuilt?: PrebuiltSourceFile;
 }
 
-export function refreshSourceFile(api: CompilerApi): RefreshSourceFile {
+export function refreshSourceFile(api: CompilerApi, prebuilt?: PrebuiltSourceFile): RefreshSourceFile {
   return {
     type: constants.REFRESH_SOURCEFILE,
     api,
+    prebuilt,
   };
 }
 
@@ -74,6 +94,9 @@ export function osThemeChange(): OsThemeChange {
 
 export type AllActions =
   | SetCode
+  | SetCurrentFile
+  | RenameFile
+  | DeleteFile
   | SetApiLoadingState
   | RefreshSourceFile
   | SetSelectedNode

@@ -3,6 +3,7 @@ import "./App.css";
 import "allotment/dist/style.css";
 import { useAppContext } from "./AppContext.js";
 import { getDescendantAtRange, getStartSafe } from "./compiler/index.js";
+import { isTsgo } from "./compiler/tsgo/tsgoVersion.js";
 import * as components from "./components/index.js";
 import { ApiLoadingState } from "./types/index.js";
 
@@ -12,7 +13,7 @@ export function App() {
 
   return (
     <div id="App" data-theme={state.editorTheme}>
-      <header id="AppHeader" className="clearfix">
+      <header id="AppHeader">
         <h2 id="title">TypeScript AST Viewer</h2>
         <components.Options
           api={compiler == null ? undefined : compiler.api}
@@ -48,17 +49,24 @@ export function App() {
   }
 
   function getCodeEditorArea() {
-    if (state.options.showFactoryCode) {
+    // factory code generation isn't available for tsgo, so don't show the pane
+    if (state.options.showFactoryCode && !isTsgo(state.options.compilerPackageName)) {
       return (
         <Allotment vertical>
           <Allotment.Pane preferredSize="70%">
+            {getFilesControl()}
             {getCodeEditor()}
           </Allotment.Pane>
           {getFactoryCodeEditor()}
         </Allotment>
       );
     } else {
-      return getCodeEditor();
+      return (
+        <>
+          {getFilesControl()}
+          {getCodeEditor()}
+        </>
+      );
     }
 
     function getFactoryCodeEditor() {
@@ -67,9 +75,22 @@ export function App() {
       }
 
       return (
-        <components.ErrorBoundary getResetHash={() => state.code}>
+        <components.ErrorBoundary getResetHash={() => state.files[state.currentFile]}>
           <components.FactoryCodeEditor compiler={compiler} theme={state.editorTheme} />
         </components.ErrorBoundary>
+      );
+    }
+
+    function getFilesControl() {
+      return (
+        <components.FilesControl
+          files={state.files}
+          currentFile={state.currentFile}
+          onSelect={(file) => dispatch({ type: "SET_CURRENT_FILE", file })}
+          onAdd={(file) => dispatch({ type: "SET_CURRENT_FILE", file })}
+          onRename={(file, newFile) => dispatch({ type: "RENAME_FILE", file, newFile })}
+          onDelete={(file) => dispatch({ type: "DELETE_FILE", file })}
+        />
       );
     }
 
@@ -93,7 +114,9 @@ export function App() {
           scriptKind={state.options.scriptKind}
           scriptTarget={state.options.scriptTarget}
           theme={state.editorTheme}
-          text={state.code}
+          text={state.files[state.currentFile]}
+          filePath={state.currentFile}
+          files={state.files}
           highlight={getCodeHighlightRange()}
           showInfo
           renderWhiteSpace
@@ -139,7 +162,7 @@ export function App() {
     );
   }
 
-  function codeEditorDidMount(editor: Parameters<import("react-monaco-editor").EditorDidMount>[0]) {
+  function codeEditorDidMount(editor: components.MonacoCodeEditor) {
     // For some reason a slight delay is necessary here. Otherwise it won't let the user type.
     setTimeout(() => editor.focus(), 100);
   }

@@ -4,16 +4,16 @@ import {
   compilerVersionCollection,
   getCompilerApi,
   hasLoadedCompilerApi,
-  type ScriptKind,
   type ScriptTarget,
 } from "./compiler/index.js";
+import { isTsgo, type TsgoPackageName } from "./compiler/tsgo/tsgoVersion.js";
+import type { PrebuiltSourceFile } from "./types/index.js";
 import type { CodeEditorTheme } from "./components/index.js";
 import { appReducer, deriveEditorTheme } from "./reducers/index.js";
 import { ApiLoadingState, type StoreState } from "./types/index.js";
 import { sleep, StateSaver, UrlSaver } from "./utils/index.js";
 
 const initialScriptTarget: ScriptTarget = 99 /* Latest */;
-const initialScriptKind: ScriptKind = 4 /* TSX */;
 const stateSaver = new StateSaver();
 
 console.log(
@@ -28,14 +28,17 @@ export interface AppContextValue {
 export const AppContext = React.createContext<AppContextValue | undefined>(undefined);
 
 export function AppContextProvider({ children }: { children: React.ReactNode }) {
+  // Guaranteed to have at least one property
+  const urlFiles = new UrlSaver().getUrlFiles();
+
   const [state, dispatch] = useReducer(appReducer, {
     apiLoadingState: ApiLoadingState.Loading,
-    code: new UrlSaver().getUrlCode(),
+    currentFile: Object.keys(urlFiles)[0],
+    files: urlFiles,
     options: {
       compilerPackageName: compilerVersionCollection[0].packageName,
       treeMode: stateSaver.get().treeMode,
       scriptTarget: initialScriptTarget,
-      scriptKind: initialScriptKind,
       bindingEnabled: true,
       showFactoryCode: stateSaver.get().showFactoryCode,
       showInternals: stateSaver.get().showInternals,
@@ -48,6 +51,9 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
   globalThis.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
     dispatch(actions.osThemeChange());
   });
+
+  // tracks whether the resident tsgo wasm session is live, so it can be freed on switch-away
+  const tsgoActiveRef = React.useRef(false);
 
   const value = { state, dispatch };
 
@@ -77,7 +83,22 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
           return;
         }
 
-        dispatch(actions.refreshSourceFile(api));
+        if (isTsgo(compilerPackageName)) {
+          // reuses one resident wasm session across edits (see tsgoCompiler.ts)
+          const prebuilt = await buildTsgoSourceFile(compilerPackageName, state.files, state.currentFile);
+          if (abortSignal.aborted) {
+            return;
+          }
+          tsgoActiveRef.current = true;
+          dispatch(actions.refreshSourceFile(api, prebuilt));
+        } else {
+          // switched away from tsgo — free the resident wasm session
+          if (tsgoActiveRef.current) {
+            tsgoActiveRef.current = false;
+            import("./compiler/tsgo/tsgoCompiler.js").then((m) => m.disposeTsgoSession()).catch(() => {});
+          }
+          dispatch(actions.refreshSourceFile(api));
+        }
         dispatch(actions.setApiLoadingState(ApiLoadingState.Loaded));
       } catch (err) {
         console.error(err);
@@ -87,8 +108,8 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
       }
     }
   }, [
-    state.code,
-    state.options.scriptKind,
+    state.currentFile,
+    state.files[state.currentFile],
     state.options.scriptTarget,
     state.options.compilerPackageName,
     state.options.bindingEnabled,
@@ -103,36 +124,34 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
     stateSaver.set(savedState);
   }, [state.options.treeMode, state.options.showFactoryCode, state.options.showInternals, state.options.theme]);
 
+  // keeps the console globals pointing at the selected node. Runs on selection/compiler
+  // changes rather than every render, because tsgo's binding globals round-trip the wasm.
   useEffect(() => {
-    if (state.compiler == null || state.compiler.selectedNode == null) {
+    const compiler = state.compiler;
+    if (compiler == null || compiler.selectedNode == null) {
       return;
     }
 
     const windowAny = window as any;
-    const selectedNode = state.compiler.selectedNode;
-    windowAny.ts = state.compiler.api;
+    const selectedNode = compiler.selectedNode;
+    windowAny.ts = compiler.api;
     windowAny.node = selectedNode;
     windowAny.selectedNode = selectedNode;
-    windowAny.sourceFile = state.compiler.sourceFile;
+    windowAny.sourceFile = compiler.sourceFile;
 
-    if (state.options.bindingEnabled) {
-      const bindingTools = state.compiler.bindingTools();
-      windowAny.checker = bindingTools.typeChecker;
-      windowAny.typeChecker = bindingTools.typeChecker;
-      windowAny.program = bindingTools.program;
-      windowAny.type = tryGet(() => bindingTools.typeChecker.getTypeAtLocation(selectedNode));
-      windowAny.symbol = tryGet(() =>
-        (selectedNode as any).symbol || bindingTools.typeChecker.getSymbolAtLocation(selectedNode)
-      );
-      windowAny.signature = tryGet(() => bindingTools.typeChecker.getSignatureFromDeclaration(selectedNode as any));
-    } else {
-      windowAny.checker = undefined;
-      windowAny.typeChecker = undefined;
-      windowAny.program = undefined;
-      windowAny.type = undefined;
-      windowAny.symbol = undefined;
-      windowAny.signature = undefined;
+    if (!state.options.bindingEnabled) {
+      setBindingGlobals({});
+      return;
     }
+
+    const bindingTools = compiler.bindingTools();
+    setBindingGlobals({
+      checker: bindingTools.typeChecker,
+      program: bindingTools.program,
+      type: tryGet(() => bindingTools.typeChecker.getTypeAtLocation(selectedNode)),
+      symbol: tryGet(() => (selectedNode as any).symbol || bindingTools.typeChecker.getSymbolAtLocation(selectedNode)),
+      signature: tryGet(() => bindingTools.typeChecker.getSignatureFromDeclaration(selectedNode as any)),
+    });
 
     function tryGet<T>(getValue: () => T) {
       try {
@@ -141,13 +160,42 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
         return undefined;
       }
     }
-  });
+  }, [state.compiler, state.options.bindingEnabled]);
 
   return (
     <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );
+}
+
+/** Set the binding-related console globals, clearing the ones not provided. */
+function setBindingGlobals(
+  globals: { checker?: unknown; program?: unknown; type?: unknown; symbol?: unknown; signature?: unknown },
+) {
+  const windowAny = window as any;
+  windowAny.checker = globals.checker;
+  windowAny.typeChecker = globals.checker;
+  windowAny.program = globals.program;
+  windowAny.type = globals.type;
+  windowAny.symbol = globals.symbol;
+  windowAny.signature = globals.signature;
+}
+
+// Builds a tsgo source file by booting the selected build's wasm (lazy-loaded here) and
+// materializing the AST off the main static bundle. Only the boot is async — the
+// resulting program and checker are synchronous, like classic TypeScript's.
+async function buildTsgoSourceFile(
+  packageName: TsgoPackageName,
+  files: Record<string, string>,
+  currentFile: string,
+): Promise<PrebuiltSourceFile> {
+  const { getTsgoSourceFile } = await import("./compiler/tsgo/tsgoCompiler.js");
+  const result = await getTsgoSourceFile(packageName, { files, currentFile });
+  return {
+    sourceFile: result.sourceFile as any,
+    bindingTools: () => result.bindingTools,
+  };
 }
 
 export function useAppContext() {

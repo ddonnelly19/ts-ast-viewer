@@ -15,3 +15,12 @@ export type SET_OPTIONS = typeof SET_OPTIONS;
 
 export const OS_THEME_CHANGE = "OS_THEME_CHANGE";
 export type OS_THEME_CHANGE = typeof OS_THEME_CHANGE;
+
+export const SET_CURRENT_FILE = "SET_CURRENT_FILE";
+export type SET_CURRENT_FILE = typeof SET_CURRENT_FILE;
+
+export const RENAME_FILE = "RENAME_FILE";
+export type RENAME_FILE = typeof RENAME_FILE;
+
+export const DELETE_FILE = "DELETE_FILE";
+export type DELETE_FILE = typeof DELETE_FILE;
